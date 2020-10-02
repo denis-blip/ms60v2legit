@@ -1,0 +1,42 @@
+{
+  "name": "ms-60",
+  "version": "1.0.0",
+  "description": "Mady By Denis.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "animequote": "^1.1.1",
+    "better-sqlite-pool": "^0.2.2",
+    "better-sqlite3": "^5.4.3",
+    "colornames": "^1.1.1",
+    "dateformat": "^3.0.3",
+    "discord-giveaways": "^4.2.1",
+    "discord.js": "^12.0.0",
+    "discord.js-commando": "^0.10.0",
+    "enmap": "^5.2.4",
+    "figlet": "^1.5.0",
+    "fs": "0.0.1-security",
+    "google-tts-api": "0.0.4",
+    "got": "^11.7.0",
+    "jimp": "^0.16.1",
+    "kitsu.js": "^2.0.0",
+    "math.js": "^1.1.46",
+    "mathjs": "^7.2.0",
+    "moment": "^2.24.0",
+    "ms": "^2.1.2",
+    "node-fetch": "^2.6.1",
+    "node-superfetch": "^0.1.10",
+    "node-url-shortener": "^1.1.11",
+    "novelcovid": "^3.0.0",
+    "parse-ms": "^2.1.0",
+    "path": "^0.12.7",
+    "pretty-ms": "^7.0.1",
+    "quick.db": "^7.1.2",
+    "user-instagram": "^2.1.3"
+  }
+}
