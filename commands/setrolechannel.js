@@ -25,11 +25,6 @@ exports.run = (client, msg, args) => {
    
  client.settings.set(msg.guild.id, channel.id, "roleschannel")
  msg.channel.send(`Set the !role command to be used in ${channel}.`)
-   
-   
-   
-   
-   
 }
 
 module.exports.help = {

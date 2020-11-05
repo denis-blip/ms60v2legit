@@ -1,7 +1,7 @@
 const { yes , no , warn , think , loading} = require('../configbot//emojis.json')
-
-const Discord = require('discord.js')
 const db = require('quick.db')
+const Discord = require('discord.js')
+
 exports.run = async (client, msg, args) => {
     if(!msg.member.hasPermission("MANAGE_MESSAGES","ADMINISTRATOR")) return msg.channel.send(`**${message.author.tag} you dont have enough perms**. Permission required: \`MANAGE_MESSAGES\` or \`ADMINISTRATOR\``)
     let cmdname = args[0]

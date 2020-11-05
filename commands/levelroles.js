@@ -24,5 +24,5 @@ exports.run = (client, msg, args) => {
 
 module.exports.help = {
     name:"levelroles",
-    usage:"!levelroles <page>",
+    usage:"<prefix>levelroles <page>",
   }

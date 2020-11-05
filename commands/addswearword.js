@@ -1,5 +1,5 @@
 const Discord = require("discord.js")
-const db = require("quick.db")
+const db = require('quick.db')
 const ms = require('parse-ms')
 const fs = require('fs')
 const { yes , no , warn , think , loading} = require('../configbot//emojis.json')

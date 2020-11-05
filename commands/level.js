@@ -9,7 +9,7 @@ exports.run = (client, msg, args) => {
     const pointsNeeded = xpForLevel(curLevel + 1);
     let embed = new MessageEmbed()
     .setAuthor(user.tag, user.displayAvatarURL)
-    .setColor("RANDOM")
+    .setColor("#00ff99")
     .setDescription(`Level: **` + client.profile.get(`${msg.guild.id}-${user.id}`, "level") + '**' + '\n' + `XP: ${client.profile.get(`${msg.guild.id}-${user.id}`, "levelpoints")}/${pointsNeeded} (${pointsNeeded - client.profile.get(`${msg.guild.id}-${user.id}`, "levelpoints")} needed)`)
     
     msg.channel.send(embed)

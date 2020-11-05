@@ -3,19 +3,25 @@ const { MessageEmbed } = require('discord.js')
 
 exports.run = (client, msg, args) => {
 
-    if (!msg.member.hasPermission('ADMINISTRATOR')) return msg.channel.send('You do not have the required permission to use this command.').then(m => {
+    if (!msg.member.hasPermission('ADMINISTRATOR')) return msg.channel.send(`${message.author.tag} you don't have enough perms.Required permissions: \`ADMINISTRATOR\`. `).then(m => {
         setTimeout(() => {
             m.delete()
-        }, 3000);
+        }, 10000);
     })
 
     if(client.settings.get(msg.guild.id, "antiinvite")) {
         client.settings.set(msg.guild.id, false, "antiinvite")
-        msg.reply('Disabled anti-invite.')
+        let embed1 = new MessageEmbed()
+        .setDescription(`${msg.author} anti-invite is now disabled. Use \`<prefix>anti-invite\` to enable anti-invite.`)
+        .setColor("#ccff66")
+        msg.channel.send(embed1)
         return;
     } else if(!client.settings.get(msg.guild.id, "antiinvite")) {
         client.settings.set(msg.guild.id, true, "antiinvite")
-        msg.reply('Enabled anti-invite.')
+        let embed = new MessageEmbed()
+        .setDescription(`${msg.author} anti-invite is now enabled. Use <prefix>anti-invite\` to disable anti-invite.`)
+        .setColor("#ccff66")
+      msg.channel.send(embed)
         return;
     }
 

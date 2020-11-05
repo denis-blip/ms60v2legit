@@ -40,5 +40,5 @@ msg.channel.send('Permitted the user to join your voice channel.')
 
 exports.help = {
     name:"join",
-    usage:"!join <user>"
+    usage:"<prefix>join <user>"
 }

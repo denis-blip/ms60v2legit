@@ -1,11 +1,14 @@
-const fs1 = require('fs').promises;
+
 const Discord = require('discord.js')
-const db = require('quick.db')
+const dbsettings = require('./configbot//mongodb.json')
+const db0 = require('quick.db')
+const { Database } = require("quickmongo");
+const db = new Database(`mongodb+srv://Denis:Denisandrei0@cluster0.0ip5w.mongodb.net/Denis?retryWrites=true&w=majority`);
 const { yes , no , warn , think , loading} = require('./configbot/emojis.json')
 const { token } = require('./configbot/token.json')
 let beingApplied = new Set()
 const client = new Discord.Client({
-  partials: ['MESSAGE', 'CHANNEL'],
+  partials: ['MESSAGE', 'CHANNEL','REACTION'],
   fetchAllMembers:true,
   disableEveryone: true,
 })
@@ -30,7 +33,7 @@ fs.readdir("./commands/", (err, files) => {
   console.log(`Loading ${jsfiles.length} Commands`)
   jsfiles.forEach((f, i) => {
     let props = require(`./commands/${f}`);
-    console.log(`${i + 1}: ${f} Loaded!`)
+    console.log(`${i + 1}: ${f} incarcata cu succes.`)
     client.commands.set(props.help.name, props)
         
   })
@@ -45,18 +48,22 @@ client.giveawaysManager = new GiveawaysManager(client, {
         reaction: "🎉"
     }
 });
-// We now have a client.giveawaysManager property to manage our giveaways!
-
+db.on("ready", () => {
+  console.log("Baza de date conectata cu succes.");  
+});
 client.giveawaysManager.on("giveawayReactionAdded", (giveaway, member, reaction) => {
-    console.log(`${member.user.tag} entered giveaway #${giveaway.messageID} (${reaction.emoji.name})`);
+  if(member.bot) return;
+  let embed = new Discord.MessageEmbed()
+  .setTitle(`Succes`)
+  .setDescription(`${member.user.tag} entry approved${yes} `)
+  .setColor("#66ff33")
+  .setFooter('MS-60 ©️')
+    member.send(embed).catch(() => {
+      client.channels.cache.get("771438605025017877").send(`:x: La un giveaway o persoana avea dm-ul inchis. Aia este :/ `)
+  })
 });
 
-client.giveawaysManager.on("giveawayReactionRemoved", (giveaway, member, reaction) => {
-    console.log(`${member.user.tag} unreact to giveaway #${giveaway.messageID} (${reaction.emoji.name})`);
-})
-
 client.on('message', async (msg) => {
-
 
   if (msg.channel.type == "dm") return;
   client.settings.ensure(msg.guild.id, {
@@ -471,11 +478,102 @@ return;
 }, 30000);
 return;
   }
+})
+client.on('messageReactionAdd', async (reaction, user) => {
+  console.log(user.username)
+  if(user.partial) await user.fetch();
+  if(reaction.partial) await reaction.fetch();
+  if(reaction.message.partial) await reaction.message.fetch();
+  if(user.bot) return;
+  let giveawayid = await db.get(`GiveawayEmbed_${reaction.message.id}`)
+  console.log(giveawayid)
+  if(!giveawayid) return
+  let giveawayrole = await db.get(`GiveawayRole_${reaction.message.id}`)
+  if(!giveawayrole) return;
+   if(reaction.message.id == giveawayid && reaction.emoji.name == `🎉`) {
+    var home = await db.get(`giveawaydone_${reaction.message.id}`)
+     
+    var reactioncheck = setInterval(async function() {
+  
+       let member = reaction.message.guild.members.cache.get(user.id) 
+      let guild = client.guilds.cache.get(reaction.message.guild.id)
+      let role = guild.roles.cache.find(role => role.id === `${giveawayrole}`); 	      
 
+      if(!member.roles.cache.has(`${role.id}`)) { 
+        reaction.users.remove(user.id) 
+       }
+       
+ 
+if(home === null) {
+    clearInterval()
+    clearInterval(reactioncheck);
+  return;
+}
+if(!home) {
+  clearInterval()
+  clearInterval(reactioncheck);
+return;
+}
+},5000);
+let member = reaction.message.guild.members.cache.get(user.id) 
+let guild = client.guilds.cache.get(reaction.message.guild.id)
+let role = guild.roles.cache.find(role => role.id === `${giveawayrole}`)
+let ffff = new Discord.MessageEmbed()
+.setThumbnail(reaction.message.guild.iconURL())
+.setTitle(`Giveaway Entry Denied!`)
+ .setColor(`#ff0000`)
+.setDescription(`**There is a requirement of role you Must Have That Role to enter the giveaway!**\n\n*by reacting to a message sent by Giveaway, you agree to be messaged.*
+  `)	
+  let embed = new Discord.MessageEmbed()
+  .setThumbnail(reaction.message.guild.iconURL())
+  .setTitle(`Giveaway Entry Arpoved!`)
+  .setColor(`#00FF00`)
+  .setDescription(`**Your Entry for [this giveaway](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}) has been approved!**\n\n*by reacting to a message sent by Giveaway, you agree to be messaged.*
+  
+    `)
+  .setTimestamp()
+  .setFooter(reaction.message.guild.name , reaction.message.guild.iconURL())
+if(member.roles.cache.has(`${role.id}`)) return user.send(embed)
+if(!member.roles.cache.has(`${role.id}`)) return user.send(ffff)
+}
+})
+client.on('messageReactionAdd', async (reaction, user) => {
+   if(user.partial) await user.fetch();
+  if(reaction.partial) await reaction.fetch();
+  if(reaction.message.partial) await reaction.message.fetch();
+  if(user.bot) return;
+  let giveawayid = await db.get(`GiveawayEmbed_${reaction.message.id}`)
+   if(!giveawayid) return
+  let giveawayids = await db.get(`GiveawayID_${reaction.message.id}`)
+  if(!giveawayids) return;
+   if(reaction.message.id == giveawayid && reaction.emoji.name == `🎉`) {
+     console.log(user.id)
+     console.log(user)
+let guild = client.guilds.cache.get(giveawayids)
+let guildcheck = guild.member(user.id)
 
-
-
-
+     var reactioncheck = setInterval(async function() {
+   if(!guildcheck) { return reaction.users.remove(user.id); }
+    
+    },5000)
+    if(guildcheck) {
+      let embed = new Discord.MessageEmbed()
+    .setThumbnail(reaction.message.guild.iconURL())
+    .setTitle(`Giveaway Entry Arpoved!`)
+    .setColor(`#00FF00`)
+    .setDescription(`**Your Entry for [this giveaway](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}) has been approved!**\n\n*by reacting to a message sent by Giveaway, you agree to be messaged.*`)
+    user.send(embed) 
+           }
+           if(!guildcheck) {
+       let ffff = new Discord.MessageEmbed()
+      .setThumbnail(reaction.message.guild.iconURL())
+      .setTitle(`Giveaway Entry Denied!`)
+       .setColor(`#ff0000`)
+      .setDescription(`**There is a requirement of role you Must Have That Role to enter the giveaway!**\n\n*by reacting to a message sent by Giveaway, you agree to be messaged.*`)
+    reaction.users.remove(user.id)
+      user.send(ffff)  
+     }
+   }
 })
 client.on('message', async (message) => {
 if (!message.guild) return;
@@ -493,7 +591,7 @@ const cmd = args.shift().toLowerCase();
 
 if (cmd.length === 0) return;
 
-let cmdx = db.get(`cmd_${message.guild.id}`)
+let cmdx = db0.get(`cmd_${message.guild.id}`)
 
 if(cmdx) {
 let cmdy = cmdx.find(x => x.name === cmd)
@@ -501,12 +599,10 @@ if(cmdy) message.channel.send(cmdy.responce)
 }
 })
 client.on('message', message => {
-  //hasPermission
+ if(message.member.hasPermission('ADMINISTRATOR')) return;
   if(message.guild) {
-let words = db.get(`anitbadwords_${message.guild.id}`)
-if(words === null) {
- return console.log(`${message.guild.name} doesn't have anti swear words...`)
-}
+let words = db0.get(`anitbadwords_${message.guild.id}`)
+if(words === null) return;
 if(words && words.find(find => find.swearword == message.content.toLowerCase())) {
  console.log(words)
 message.delete()
@@ -518,145 +614,53 @@ message.reply(`The word you said is blocked from ${message.guild.name}/this serv
 }
   }
 })
-require('dotenv').config;
-const path = require('path');
-
-const event = require('./structures/event');
-const command = require('./structures/command');
-const { Client, MessageEmbed } = require('discord.js');
-const { dbgive } = require('./structures/database');
-
-const ms = require('ms');
-const moment = require('moment');
-const pretty = require('pretty-ms');
-
-
-class Giveaway extends Client{
-    constructor(options){
-        super(options)
-
-        this.commands = new Map();
-        this.events = new Map();
-        this.giveaways = new Array();
-        this.prefix = 'ms?'
-
-        // this.create();
+client.on("message", async message => {
+  if (message.channel.name == "chatbot") {
+  if (message.author.bot) return;
+  message.content = message.content.replace(/@(everyone)/gi, "everyone").replace(/@(here)/gi, "here");
+  if (message.content.includes(`@`)) {
+  return message.channel.send(`**:x: Please dont mention anyone**`);
+   }
+    message.channel.startTyping();
+  if (!message.content) return message.channel.send("Please say something.");
+  fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${encodeURIComponent(message.content)}&botname=${client.user.username}&ownername=Denis__#7962`)
+      .then(res => res.json())
+      .then(data => {
+          message.channel.send(`> ${message.content} \n <@${message.author.id}> ${data.message}`);
+      });
+        message.channel.stopTyping();
+  }
+  });
+  client.on('message', async message => {
+    if(message.channel.type === 'DM') return;
+    if(message.author.bot) return;
+    let status = await db.get(`muted_${message.guild.id}_${message.author.id}`)
+    if(!status) return;
+    if(status === 'MUTED') {
+     let muterole = message.guild.roles.cache.find(role => role.name === "Muted");
+ if(!muterole) {
+   message.guild.roles.create({
+     data: {
+       name: 'Muted',
+       color: 'gray',
+     },
+     reason: 'Mute Role!',
+   }).then(async role => {
+ message.guild.channels.cache.forEach(darkboy => {
+    darkboy.updateOverwrite(role, { SEND_MESSAGES: false })
+ db.set(`muterole_${message.guild.id}`, role.id).then(console.log())
+ message.guild.members.fetch(message.author).then(member => {
+ member.roles.add(role.id)
+ })       
+ })
+ message.guild.members.fetch(message.author).then(member => {
+ 
+ let extra = message.guild.roles.cache.find(role => role.name === "Muted");
+ member.roles.add(extra.id)
+ })
+   })
+ }
     }
-    
-    async registerCommands(dir) {
-        const filePath = path.join(__dirname, dir);
-        const files = await fs1.readdir(filePath);
-        for (const file of files) {
-            const stat = await fs1.lstat(path.join(filePath, file));
-            if (stat.isDirectory()) this.registerCommands(this, path.join(dir, file));
-            if (file.endsWith('.js')) {
-                const Command = require(path.join(filePath, file));
-                if (Command.prototype instanceof command) {
-                    const cmd = new Command();
-                    this.commands.set(cmd.name, cmd);
-                    await cmd.aliases.forEach((alias) => {
-                    this.commands.set(alias, cmd);
-                    });
-                }
-            }
-        }
-    }
+   }) 
 
-    async registerEvents(dir) {
-        const filePath = path.join(__dirname, dir);
-        const files = await fs1.readdir(filePath);
-        for (const file of files) {
-            const stat = await fs1.lstat(path.join(filePath, file));
-            if (stat.isDirectory()) this.registerEvents(this, path.join(dir, file));
-            if (file.endsWith('.js')) {
-                const Event = require(path.join(filePath, file));
-                if (Event.prototype instanceof event) {
-                    const event = new Event();
-                    this.events.set(event.name, event);
-                    this.on(event.name, event.run.bind(event, this));
-                }
-            }
-        }
-    }
-    async create(){
-      this.login(`${token}`)
-        await this.registerCommands('./commands-giveaways')
-        await this.registerEvents('./events-giveaways');
-        this.updateGiveaways();
-    }
-
-    updateGiveaways() {
-        setInterval(() => {
-            let giveaways = dbgive.prepare('SELECT * FROM giveaways WHERE ended=\'false\'').all();
-
-            giveaways.forEach(async giveaway => {
-                // console.log(giveaway);
-                if(Date.now() >= giveaway.end_at) return  this.emit('giveawayEnd', giveaway);
-                if(!client1.channels.cache.get(giveaway.channel)) {console.log('giveaway channel wasn\'t found, removing the giveaway.')}
-                try {
-                    let message = await client1.channels.cache.get(giveaway.channel).messages.fetch(giveaway.message);
-                    // console.log(message)
-                    let giveaway_embed = new MessageEmbed()
-                    .setTitle(`🎊 ${giveaway.amount} ${giveaway.reward}`)
-                    .setDescription(`React with 🎉 to enter!\n\nTime left: **${pretty(giveaway.end_at-Date.now())}**\nHosted by: <@${giveaway.creator}>`)
-                    .setFooter(`Ends at`)
-                    .setTimestamp(moment(giveaway.end_at).format('MM/DD/YYYY hh:mm a'));
-
-                    await message.edit(giveaway_embed);
-                } catch (error) {
-                    if(error.code == '10008') return dbgive.prepare('DELETE FROM giveaways WHERE message=?').run(giveaway.message);
-                    else console.log(`Error while updating and checking messages.\n`, error.stack)
-                }
-                
-            });
-        }, 5 * 1000);
-    }
-}
-const client1 = new Giveaway()
-client1.create();
-client.on("guildMemberAdd", async (member) => {   
-let LoggingChannel = await db.get(`LoggingChannel_${member.guild.id}`);
-
-//if no channel found in the specific guild
-if (!LoggingChannel)console.log(`Setup Is Not Done in ${member.guild.id} aka ${member.guild.name} (channel not found)`);
-
-//getting notify role
-let notifyRole = await db.get(`notifyRole_${member.guild.id}`);
-
-//if no role found in the specific guild
-if (!notifyRole)return console.log(`Setup Is Not Done in ${member.guild.id} (${member.guild.name}) (role not found)`);
-
-//to get created date in days format
-let x = Date.now() - member.user.createdAt;
-let created = Math.floor(x / 86400000);
-
-//creation date
-let creationDate = moment
-  .utc(member.user.createdAt)
-  .format("dddd, MMMM Do YYYY, HH:mm:ss");
-
-//joindate
-let joiningDate = moment
-  .utc(member.joinedAt)
-  .format("dddd, MMMM Do YYYY, HH:mm:ss");
-
-//only sends message when alt found
-if (created < 31) {
-  //embed
-  let altEmbed = //main alt message
-  new Discord.MessageEmbed().setTitle("Alt Found!").setColor("RANDOM")
-    .setDescription(`
-**__Alt Name__**: ${member.user} (${member.user.username})
-**ID**: ${member.user.id}
-**Account Created**: ${created} days ago
-**Account Creation Date**: ${creationDate}
-**Join Position**: ${member.guild.memberCount}
-**Join Date**: ${joiningDate}
-`);
-
-  member.guild.channels.cache
-    .get(LoggingChannel)
-    .send(`Notification: <@&${notifyRole}>`, altEmbed);
-}
-})
 client.login(token)

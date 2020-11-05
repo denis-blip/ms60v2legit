@@ -1,5 +1,7 @@
 const Discord = require('discord.js');
-const db = require('quick.db')
+const dbsettings = require('../configbot/mongodb.json')
+const { Database } = require("quickmongo");
+const db = new Database(`mongodb+srv://${dbsettings.name}:${dbsettings.password}@cluster0.0ip5w.mongodb.net/${dbsettings.name}?retryWrites=true&w=majority`);
 exports.run = async (client, msg, args) => {
     if (!msg.member.hasPermission("MANAGE_ROLES","ADMINISTRATOR")) return msg.channel.send(`**${msg.author.tag} you dont have enough perms**. Permission required: \`MANAGE_ROLES\``);
     const mentionedRole = msg.mentions.roles.first();

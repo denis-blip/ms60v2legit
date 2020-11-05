@@ -1,15 +1,7 @@
 const Discord = require("discord.js");
 exports.run = async (client, msg, args) => {
-  let user;
-  if (msg.mentions.users.first()) {
-    user = msg.mentions.users.first();
-  } else if (args[0]) {
-    user = msg.author;
-  }
-      if(!user) {
-      return msg.channel.send("No user specified.")
-  }
-  avatar = user.displayAvatarURL({dynamic: true});
+  var user = msg.mentions.users.first() || msg.author;
+  avatar = user.displayAvatarURL({dynamic: true , size: 1024});
   const embed = new Discord.MessageEmbed()
   .setTitle(`${user.tag}'s avatar`)
   .setDescription(`[Avatar **${user.tag}**](${avatar})`)

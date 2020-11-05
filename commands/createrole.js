@@ -2,7 +2,9 @@ const Discord = require("discord.js");
 const toHex = require('colornames');
 const { argDependencies, isNegative } = require("mathjs");
 const { yes , no , warn , think , loading} = require('../configbot/emojis.json')
-const db = require('quick.db')
+const dbsettings = require('../configbot/mongodb.json')
+const { Database } = require("quickmongo");
+const db = new Database(`mongodb+srv://${dbsettings.name}:${dbsettings.password}@cluster0.0ip5w.mongodb.net/${dbsettings.name}?retryWrites=true&w=majority`);
 exports.run = async (client, msg, args) => {
     if (!msg.member.hasPermission("MANAGE_ROLES")) return msg.channel.send(`${no}**${msg.author.tag} you dont have enough perms**. Permission required: \`MANAGE_ROLES\``);
     const name = args.slice(2).join(" ")

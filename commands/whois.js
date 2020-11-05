@@ -20,7 +20,7 @@ exports.run = async (client, msg, args) => {
     .setAuthor(member.user.tag, member.user.displayAvatarURL())
     .setTimestamp()
     .setTitle(`${member}'s info:`)
-    .setColor('GREEN')
+    .setColor('#0000ff')
     .addField("Id account:", member.id)
     .addField('Roles:', `<@&${member._roles.join('> <@&')}>`)
     .addField("Registered", ` ${moment.utc(member.user.createdAt).format("dddd, MMMM Do YYYY")}`, true) 

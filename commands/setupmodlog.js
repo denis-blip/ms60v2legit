@@ -1,5 +1,5 @@
 const Discord = require("discord.js")
-const db = require("quick.db")
+
 exports.run = (client, msg, args) => {
     let channel = msg.mentions.channels.first()
     

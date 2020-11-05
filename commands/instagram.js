@@ -13,7 +13,7 @@ exports.run = async (client, msg, args) => {
 
       //create a new embed with the result info and send it to the channel
       let embed = new MessageEmbed()
-        .setColor('PINK')
+        .setColor('#ff99ff')
         .setTitle(res.fullName)
         .setURL(res.link)
         .setThumbnail(res.profilePicHD)
