@@ -520,15 +520,15 @@ let guild = client.guilds.cache.get(reaction.message.guild.id)
 let role = guild.roles.cache.find(role => role.id === `${giveawayrole}`)
 let ffff = new Discord.MessageEmbed()
 .setThumbnail(reaction.message.guild.iconURL())
-.setTitle(`Giveaway Entry Denied!`)
+.setTitle(`Giveaway Entry Denied! ${no}`)
  .setColor(`#ff0000`)
-.setDescription(`**There is a requirement of role you Must Have That Role to enter the giveaway!**\n\n*by reacting to a message sent by Giveaway, you agree to be messaged.*
+.setDescription(`You need <@${giveawayrole}> to join [giveaway](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id})
   `)	
   let embed = new Discord.MessageEmbed()
   .setThumbnail(reaction.message.guild.iconURL())
-  .setTitle(`Giveaway Entry Arpoved!`)
+  .setTitle(`Giveaway Entry Arpoved! ${yes}`)
   .setColor(`#00FF00`)
-  .setDescription(`**Your Entry for [this giveaway](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}) has been approved!**\n\n*by reacting to a message sent by Giveaway, you agree to be messaged.*
+  .setDescription(`Entry approved on this [giveaway](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id})
   
     `)
   .setTimestamp()
@@ -559,17 +559,17 @@ let guildcheck = guild.member(user.id)
     if(guildcheck) {
       let embed = new Discord.MessageEmbed()
     .setThumbnail(reaction.message.guild.iconURL())
-    .setTitle(`Giveaway Entry Arpoved!`)
+    .setTitle(`Giveaway Entry Arpoved! ${yes}`)
     .setColor(`#00FF00`)
-    .setDescription(`**Your Entry for [this giveaway](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}) has been approved!**\n\n*by reacting to a message sent by Giveaway, you agree to be messaged.*`)
+    .setDescription(`Entry approved on this [giveaway](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id})`)
     user.send(embed) 
            }
            if(!guildcheck) {
        let ffff = new Discord.MessageEmbed()
       .setThumbnail(reaction.message.guild.iconURL())
-      .setTitle(`Giveaway Entry Denied!`)
+      .setTitle(`Giveaway Entry Denied!${no}`)
        .setColor(`#ff0000`)
-      .setDescription(`**There is a requirement of role you Must Have That Role to enter the giveaway!**\n\n*by reacting to a message sent by Giveaway, you agree to be messaged.*`)
+      .setDescription(`Entry denied on [giveaway](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}).\nYou need to join a server. Check  requierments.`)
     reaction.users.remove(user.id)
       user.send(ffff)  
      }
@@ -599,12 +599,10 @@ if(cmdy) message.channel.send(cmdy.responce)
 }
 })
 client.on('message', message => {
- if(message.member.hasPermission('ADMINISTRATOR')) return;
   if(message.guild) {
 let words = db0.get(`anitbadwords_${message.guild.id}`)
 if(words === null) return;
 if(words && words.find(find => find.swearword == message.content.toLowerCase())) {
- console.log(words)
 message.delete()
 message.reply(`The word you said is blocked from ${message.guild.name}/this server`).then(msg => {
  msg.delete({ 
@@ -661,6 +659,6 @@ client.on("message", async message => {
    })
  }
     }
-   }) 
+})
 
 client.login(token)

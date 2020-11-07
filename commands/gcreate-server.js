@@ -7,19 +7,22 @@ const { yes , no , warn , think , loading} = require('../configbot//emojis.json'
 const db = new Database(`mongodb+srv://${dbsettings.name}:${dbsettings.password}@cluster0.0ip5w.mongodb.net/${dbsettings.name}?retryWrites=true&w=majority`);
 exports.run = async (client, message, args) => {
  let channel = message.mentions.channels.first()
- if(!channel) return message.channel.send(`**${prefix}gcreate <channel> <Server-Link> <time> <Prize>**`)
+ if(!channel) return message.channel.send(`<prefix>gcreate <channel> <Server-Link> <time> <Prize>`)
  let channelcheck = message.guild.channels.cache.find(x => x.name == `${channel.name}`)
  if(!channelcheck) return message.channel.send(`that channel is invaild.`)
- if(!args[1]) return message.channel.send(`**${prefix}gcreate ${channel} <Server-Link> <time> <Prize>** .`)
+ if(!args[1]) return message.channel.send(`<prefix>gcreate ${channel} <Server-Link> <time> <Prize>.`)
  let check = client.fetchInvite(args[1]).then(async invite => {
  if(!check) return message.channel.send(`That's on invaild invite`)
   let checking = await client.guilds.cache.get(invite.guild.id)
-  if(!checking) return message.channel.send(`please check if im on that guild...`)
- if(!args[2]) return message.channel.send(`**${prefix}gcreate ${channel} ${args[1]} <time> <Prize>**
+  let embed = new Discord.MessageEmbed()
+  .setDescription(`You need to invite me on that server. Use this invite:`,`[invite](https://discord.com/oauth2/authorize?client_id=${client.id}&scope=bot&permissions=2080898303)`)
+  .setColor('#ccff00')
+  if(!checking) return message.channel.send(embed)
+ if(!args[2]) return message.channel.send(`<prefix>gcreate ${channel} ${args[1]} <time> <Prize>
 __1d,2h,1m,1s__`)
  let prize = message.content.split(' ').slice(4).join(' ');
 
-if(!prize) return message.channel.send(`**${prefix}gcreate ${channel} ${args[1]} ${args[2]} <Prize>**`)
+if(!prize) return message.channel.send(`<prefix>gcreate ${channel} ${args[1]} ${args[2]} <Prize>**`)
        channel.send(`**:tada: :tada: **GIVEAWAY** :tada: :tada:!**`).then(o => {
 db.set(`giveawaymsg_${o.id}`, o.id)
 let giveawayEmbed = new Discord.MessageEmbed()
@@ -91,6 +94,6 @@ giveaway.edit(editembed)
 
 }
 module.exports.help = {
-    name:"start-giveaway server",
+    name:"start-giveaway-server",
     usage: "start-giveaway server (BETA)"
   }

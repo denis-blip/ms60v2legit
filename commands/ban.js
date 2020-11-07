@@ -125,16 +125,16 @@ exports.run = async (client, msg, args) => {
       let chx = db.get(`modlog_${msg.guild.id}`, channel.id)
     
       if(chx === null) {
-        return;
+        return console.log('Modlog not setup.');
       }
     
       let embed1 = new Discord.MessageEmbed()
       .setAuthor(`${msg.author.tag} - ${msg.author.id}`, msg.author.displayAvatarURL({size: 4096, dynamic: true}))
       .setTitle(`Logs ${msg.guild.name}`)
-      .setDescription(`${target}was banned.\nMore Informations:\n\nBanned account id:(${target.id})\nReason:${Reason || "No Reason Provided!"}\nDate:${new Intl.DateTimeFormat("en-US").format(Date.now())}`)
+      .setDescription(`${Member}was banned.\nMore Informations:\n\nBanned account id:(${Member.id})\nReason:${Reason || "No Reason Provided!"}\nDate:${new Intl.DateTimeFormat("en-US").format(Date.now())}`)
       .setColor("#478800")
       .setTimestamp()
-      bot.channels.cache.get(chx).send(embed1)
+      client.channels.cache.get(chx).send(embed1)
   } catch (error) {
       return msg.channel
           .send({

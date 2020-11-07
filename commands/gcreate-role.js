@@ -7,18 +7,18 @@ const { yes , no , warn , think , loading} = require('../configbot//emojis.json'
 const db = new Database(`mongodb+srv://${dbsettings.name}:${dbsettings.password}@cluster0.0ip5w.mongodb.net/${dbsettings.name}?retryWrites=true&w=majority`);
 exports.run = async (client, message, args) => {
  let channel = message.mentions.channels.first()
- if(!channel) return message.channel.send(`**${prefix}gcreate <channel> <Role> <time> <Prize>**`)
+ if(!channel) return message.channel.send(`<prefix>gcreate <channel> <Role> <time> <Prize>`)
  let channelcheck = message.guild.channels.cache.find(x => x.name == `${channel.name}`)
  if(!channelcheck) return message.channel.send(`that channel is invaild.`)
   let role = message.mentions.roles.first();
- if(!role) return message.channel.send(`**${prefix}gcreate ${channel} <Role> <time> <Prize>**`)
+ if(!role) return message.channel.send(`<prefix>gcreate ${channel} <Role> <time> <Prize>`)
  let rolecheck = message.guild.roles.cache.find(x => x.name == `${role.name}`)
  if(!rolecheck) return message.channel.send(`This invaild Role..`)
- if(!args[2]) return message.channel.send(`**${prefix}gcreate ${channel} ${role.name} <time> <Prize>**
+ if(!args[2]) return message.channel.send(`<prefix>gcreate ${channel} ${role.name} <time> <Prize>
 __1d,2h,1m,1s__`)
  let prize = message.content.split(' ').slice(4).join(' ');
 
-if(!prize) return message.channel.send(`**${prefix}gcreate ${channel} ${role.name} ${args[2]} <Prize>**`)
+if(!prize) return message.channel.send(`<prefix>gcreate ${channel} ${role.name} ${args[2]} <Prize>`)
 
       channel.send(`**:tada: :tada: **GIVEAWAY** :tada: :tada:!**`).then(o => {
 db.set(`giveawaymsg_${o.id}`, o.id)
@@ -94,6 +94,6 @@ db.delete(`giveawaydone_${giveaway.id}`, null)
 })
 }
 module.exports.help = {
-    name:"start-giveaway role",
+    name:"start-giveaway-role",
     usage: "(BETA)"
   }

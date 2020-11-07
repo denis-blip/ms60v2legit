@@ -1,9 +1,9 @@
- ## BOT SESSTINGS ##
+
  messagesfetchlimts: '50'
  botlog: '769528680057012255'
 
 
- ## EMOJIS ##
+
  attention: '<:warn:769094491998781450>'
  permission: '<:17325:760566397843144744>'
  yes: '<a:loading:769114747571798026>'
