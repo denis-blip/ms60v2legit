@@ -19,7 +19,7 @@ exports.run = async (client, msg, args) => {
   if (!msg.member.permissions.has("BAN_MEMBERS","ADMINISTRATOR")) {
       let nopermsembed = new Discord.MessageEmbed()
           .setDescription(
-              `${no}${msg.author.tag} you don't have enough perms.Required permissions: \`BAN_MEMBERS\` or \`ADMINISTRATOR\`. `
+              `${no}${msg.author.tag} you don't have enough perms.Required permissions: \`BAN_MEMBERS\` or \`ADMINISTRATOR\`. Clar! `
           )
           .setColor("#0B0B0B");
       msg.channel.send(nopermsembed);

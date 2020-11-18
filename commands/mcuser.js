@@ -8,8 +8,7 @@ exports.run = async (client, msg, args) => {
     if (!username) {await client.sendErrorEmbed(msg.channel, 'Please provide a minecraft username'); return;}
 
     let embed = new Discord.MessageEmbed()
-        .setColor(client.config.embed.color)
-        .setFooter(client.config.embed.footer)
+      .setColor('#b00b1e')
 
     request(`https://api.mojang.com/users/profiles/minecraft/${username}`, async function(err, response, body) {
 
@@ -20,7 +19,9 @@ exports.run = async (client, msg, args) => {
         }
 
         if (!body) {
-            await client.sendErrorEmbed(msg.channel, "Please provide a value username");
+            await msg.channel.send(
+                'Please send a valid name.'
+            )
             return;
         }
 

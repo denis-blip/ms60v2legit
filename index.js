@@ -1,6 +1,7 @@
 
 const Discord = require('discord.js')
 const dbsettings = require('./configbot//mongodb.json')
+const config = require(`${process.cwd()}/config.js`);
 const db0 = require('quick.db')
 const { Database } = require("quickmongo");
 const db = new Database(`mongodb+srv://Denis:Denisandrei0@cluster0.0ip5w.mongodb.net/Denis?retryWrites=true&w=majority`);
@@ -21,6 +22,18 @@ client.settings = new Enmap({name:"settings", fetchAll: true})
 client.reactionroles = new Enmap({name:"reactionroles", fetchAll: true})
 client.blacklisted = new Enmap({name:"blacklisted"})
 client.applications = new Enmap({name:"applications", fetchAll: true})
+const { Player } = require("discord-player");
+client.Util = require(`${process.cwd()}/modules/MusicUtil.js`);
+const { customFilters } = require(`${process.cwd()}/MusicConfig.js`);
+const player = new Player(client, { 
+    leaveOnEmpty: false, 
+    leaveOnEnd:   false, 
+    leaveOnStop:  true 
+});
+Object.keys(customFilters).forEach(c => {
+    player.filters[`${c}`] = customFilters[c];
+});
+client.player = player;
 fs.readdir("./commands/", (err, files) => {
   if (err) console.error(err)
   let jsfiles = files.filter(f => f.split(".").pop() === "js")
@@ -28,8 +41,8 @@ fs.readdir("./commands/", (err, files) => {
   if (jsfiles.length <= 0) {
     console.log("There are no commands to load...")
     return;
+  
   }
-
   console.log(`Loading ${jsfiles.length} Commands`)
   jsfiles.forEach((f, i) => {
     let props = require(`./commands/${f}`);
@@ -240,7 +253,7 @@ client.on('message', async (msg) => {
    if (client.blacklisted.get(client.user.id, "blacklistedusers").includes(msg.author.id)) {
    	return msg.reply('You have been blacklisted from using this bot, if this is a mistake then please dm `cex#0001`.')
    }
-    cmd.run(client, msg, args);
+    cmd.run(client, msg, args,db, player);
 })
 
 
@@ -652,13 +665,13 @@ client.on("message", async message => {
  })       
  })
  message.guild.members.fetch(message.author).then(member => {
- 
  let extra = message.guild.roles.cache.find(role => role.name === "Muted");
  member.roles.add(extra.id)
  })
    })
  }
-    }
+}
 })
-
-client.login(token)
+client.login(token).catch((err) => {
+  console.log(`Invalid token:  ${err}`)
+})
